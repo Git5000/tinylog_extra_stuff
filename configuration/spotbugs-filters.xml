@@ -1,0 +1,79 @@
+<FindBugsFilter>
+	<Match>
+		<!-- Generated Sources -->
+		<Package name="~.*\.generated.*" />
+	</Match>
+	<Match>
+		<!-- Loggers and Thread Context -->
+		<Or>
+			<Class name="org.tinylog.Logger" />
+			<Class name="org.tinylog.TaggedLogger" />
+			<Class name="org.tinylog.ThreadContext" />
+		</Or>
+		<Bug pattern="UC_USELESS_VOID_METHOD" />
+	</Match>
+	<Match>
+		<!-- Legacy Timestamp, Log Entry and Log Entry Builder -->
+		<Or>
+			<Class name="org.tinylog.runtime.LegacyTimestamp" />
+			<Class name="org.tinylog.core.LogEntry" />
+			<Class name="org.tinylog.util.LogEntryBuilder" />
+		</Or>
+		<Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2" />
+	</Match>
+	<Match>
+		<!-- Runtime Dialects -->
+		<Or>
+			<Class name="org.tinylog.runtime.AndroidRuntime" />
+			<Class name="org.tinylog.runtime.LegacyJavaRuntime" />
+		</Or>
+		<!-- Runtime dialects use non-public API that throws maybe unknown exceptions / Null is a valid return value for arrays to distinguish between empty and unloaded stack traces -->
+		<Bug pattern="REC_CATCH_EXCEPTION, PZLA_PREFER_ZERO_LENGTH_ARRAYS" />
+	</Match>
+	<Match>
+		<!-- Base Class for Format Pattern Writers -->
+		<Class name="org.tinylog.writers.AbstractFormatPatternWriter" />
+		<!-- It doesn't matter if "File.mkdirs()" creates new directories (returns "true") or if these exist already (returns "false") -->
+		<Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+	</Match>
+	<Match>
+		<!-- JDBC Writer and its test -->
+		<Source name="~.*JdbcWriter(Test)?\.java" />
+		<!-- SQL for prepared statement cannot be constant -->
+		<Bug pattern="SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING, SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" />
+	</Match>
+	<Match>
+		<!-- Static logger factory for SLF4J -->
+		<Class name="org.slf4j.impl.StaticLoggerBinder" />
+		<!-- Field REQUESTED_API_VERSION is required by SLF4J and must not be final to avoid constant folding by the compiler. -->
+		<Bug pattern="MS_SHOULD_BE_FINAL, URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD" />
+	</Match>
+	<Match>
+		<!-- Original Apache Log4j 1.2 Classes -->
+		<Class name="org.apache.log4j.Priority" />
+		<!-- Ignore unchecked casts as Apache Log4j 1.2 does -->
+		<Bug pattern="BC_UNCONFIRMED_CAST" />
+	</Match>
+	<Match>
+		<!-- JUnit Tests -->
+		<Source name="~.*Test\.java" />
+		<Bug pattern="DM_USELESS_THREAD, DP_DO_INSIDE_DO_PRIVILEGED, RV_RETURN_VALUE_IGNORED_BAD_PRACTICE, RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT, SIC_INNER_SHOULD_BE_STATIC_ANON, UPM_UNCALLED_PRIVATE_METHOD, URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD" />
+	</Match>
+	<Match>
+		<!-- Workaround for https://github.com/spotbugs/spotbugs/issues/493 -->
+		<Source name="~.*(Test|Benchmark)\.java" />
+		<Bug pattern="OBL_UNSATISFIED_OBLIGATION" />
+	</Match>
+	<Match>
+		<!-- Writing Benchmark -->
+		<Class name="org.tinylog.benchmarks.api.WritingBenchmark$Configuration" />
+		<!-- It doesn't matter for the benchmark if "File.delete()" fails or not -->
+		<Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+	</Match>
+	<Match>
+		<!-- Stack Trace Benchmark -->
+		<Class name="org.tinylog.benchmarks.api.StackTraceBenchmark" />
+		<!-- Performance of inner anonymous class is the purpose of a benchmark -->
+		<Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON" />
+	</Match>
+</FindBugsFilter>

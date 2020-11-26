@@ -1,0 +1,14 @@
+  writerA: 
+     type: "console"
+     level: "INFO"
+     tag: "TAG1"
+     format: "{date}: [{level}]: YAML {message}"
+     stream: "out"
+  writerB: 
+     type: "console"
+     level: "WARN"
+     tag: "TAG1"
+     format: "{date}: [{level}]: YAML {message}"
+     stream: "out"
+  extra: "test"
+  

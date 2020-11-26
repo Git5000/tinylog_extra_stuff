@@ -1,0 +1,2 @@
+org.tinylog.extra.configuration.JsonConfigurationLoader
+org.tinylog.extra.configuration.YamlConfigurationLoader
