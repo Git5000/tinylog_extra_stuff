@@ -15,6 +15,7 @@ package org.tinylog.extra.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -22,6 +23,9 @@ import java.util.Properties;
 import org.tinylog.configuration.PropertiesConfigurationLoader;
 import org.yaml.snakeyaml.Yaml;
 
+/**
+ * Load properties from YAML.
+ */
 public class YamlConfigurationLoader extends PropertiesConfigurationLoader {
 	private static final String[] YAML_CONFIGURATION_FILES = new String[] {
 		"tinylog-dev.yaml",
@@ -48,6 +52,7 @@ public class YamlConfigurationLoader extends PropertiesConfigurationLoader {
 	protected void load(final Properties properties, final InputStream stream) throws IOException {
 		Yaml yaml = new Yaml();
 		Map<String, Object> yamlObject = yaml.load(stream);
+		// Note: The recursive parsing could be done a bit neater and shorter if done like the JSON reader 
 		for (Entry<String, Object> yamlEntry : yamlObject.entrySet()) {
 			if (yamlEntry.getKey().startsWith("writer")) {
 				@SuppressWarnings("unchecked")
@@ -57,13 +62,37 @@ public class YamlConfigurationLoader extends PropertiesConfigurationLoader {
 					if (writerEntry.getKey().equals("type")) {
 						properties.put(writer, writerEntry.getValue());
 					} else {
-						properties.put(writer + "." + writerEntry.getKey(), writerEntry.getValue());
+						resolveYamlMap(properties, writer, writerEntry.getKey(), writerEntry.getValue());
 					}
 				}
 			} else {
 				properties.put(yamlEntry.getKey(), yamlEntry.getValue());
 			}
 		}	
+	}
+	
+	/**
+	 * Resolve nested YAML entries to a dot separated string (e.g. writer.FIELD.date) and
+	 * writes them to the properties.
+	 * @param properties
+	 *            The properties to use
+	 * @param parent 
+	 *            The parent tag (e.g. writerA)
+	 * @param key 
+	 *            The current key (e.g. field)
+	 * @param value 
+	 *            The value (e.g. the new hashmap or a string)
+	 */
+	@SuppressWarnings("unchecked")
+	protected void resolveYamlMap(final Properties properties, final String parent, final String key, final Object value) {
+		if (value instanceof HashMap) {
+			for (Entry<String, Object> entry: ((HashMap<String, Object>) value).entrySet()) {
+				resolveYamlMap(properties, parent + "." + key, entry.getKey(), entry.getValue());
+			}
+		} else {
+			String resultKey = parent + "." + key;
+			properties.put(resultKey, value);
+		}
 	}
 	
 	/**

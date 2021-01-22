@@ -10,5 +10,9 @@
      tag: "TAG1"
      format: "{date}: [{level}]: YAML {message}"
      stream: "out"
+     field:
+        TIMESTAMP: date
+        LEVEL: level
+        MESSAGE: "{class}.{method}() {message}"
   extra: "test"
   

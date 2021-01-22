@@ -24,6 +24,9 @@ import org.tinylog.configuration.PropertiesConfigurationLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Load properties from a JSON file.
+ */
 public class JsonConfigurationLoader extends PropertiesConfigurationLoader {
 	private static final String[] JSON_CONFIGURATION_FILES = new String[] {
 		"tinylog-dev.json",
@@ -50,6 +53,7 @@ public class JsonConfigurationLoader extends PropertiesConfigurationLoader {
 	protected void load(final Properties properties, final InputStream stream) throws IOException {
 		GsonBuilder builder = new GsonBuilder();
 		builder.disableHtmlEscaping();
+		builder.registerTypeAdapter(Properties.class, new PropertiesDeserializerFromJson());
 		Gson gson = builder.create();
 		Reader reader = null;
 		try {
@@ -67,7 +71,8 @@ public class JsonConfigurationLoader extends PropertiesConfigurationLoader {
 	 * Retrieve an array of configuration files. An attempt is made to load the properties from these files in the 
 	 * given sequence.
 	 * 
-	 *  @return The configuration files
+	 *  @return
+	 *          The configuration files
 	 */
 	protected String[] getConfigurationFiles() {
 		return JSON_CONFIGURATION_FILES;
