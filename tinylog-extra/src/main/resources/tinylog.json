@@ -1,13 +1,21 @@
 {
-  "writerB.tag": "TAG1",
-  "writerA.level": "INFO",
-  "writerB": "console",
-  "writerA.tag": "TAG1",
-  "writerA": "console",
-  "writerB.format": "{date}: [{level}]: JSON {message}",
-  "writerB.stream": "out",
-  "writerA.format": "{date}: [{level}]: JSON {message}",
-  "writerA.stream": "out",
-  "writerB.level": "WARN",
-  "bla":"bb"
+  "configuration.priority"="5000",
+  "writerA" : {
+    "type": "console",
+    "level": "INFO",
+    "tag": "TAG1",
+    "format": "{date}: [{level}]: JSON {message}",
+    "stream": "out",
+    "field" : {
+      "TIMESTAMP": "date"
+    }
+  },
+  "writerB" : {
+    "type": "console",
+    "tag": "TAG1",
+    "format": "{date}: [{level}]: JSON {message}",
+    "stream": "out",
+    "level": "WARN"
+  },
+  "extra":"test"
 }
