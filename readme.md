@@ -36,6 +36,10 @@ YAML file:
      tag: "TAG1"
      format: "{date}: [{level}]: YAML {message}"
      stream: "out"
+     field:
+        TIMESTAMP: date
+        LEVEL: level
+        MESSAGE: "{class}.{method}() {message}"
   extra: "test"
 ```
 
@@ -58,16 +62,24 @@ JSON file:
 
 ```
 {
-  "writerB.tag": "TAG1",
-  "writerA.level": "INFO",
-  "writerB": "console",
-  "writerA.tag": "TAG1",
-  "writerA": "console",
-  "writerB.format": "{date}: [{level}]: JSON {message}",
-  "writerB.stream": "out",
-  "writerA.format": "{date}: [{level}]: JSON {message}",
-  "writerA.stream": "out",
-  "writerB.level": "WARN",
+  "writerA" : {
+    "type": "console",
+    "level": "INFO",
+    "tag": "TAG1",
+    "format": "{date}: [{level}]: JSON {message}",
+    "stream": "out",
+    "field" : {
+      "TIMESTAMP": "date"
+    }
+  },
+  "writerB" : {
+    "type": "console",
+    "tag": "TAG1",
+    "format": "{date}: [{level}]: JSON {message}",
+    "stream": "out",
+    "level": "WARN"
+  },
+  "extra":"test"
 }
 
 ```
